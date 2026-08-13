@@ -1,0 +1,28 @@
+{
+  "slug": "nordwerk",
+  "name": "Nordwerk Systemtechnik",
+  "branche": "Maschinen- und Anlagenbau",
+  "logo": { "text": "NORDWERK" },
+  "farben": {
+    "primaer": "#0e2a52",
+    "akzent": "#c8102e",
+    "ink": "#111820",
+    "flaeche": "#f0f1f3"
+  },
+  "schriften": { "display": "archivo", "text": "inter", "mono": "plexMono" },
+  "radius": 0,
+  "texte": {
+    "eyebrow": "Automatisierung für Nordwerk",
+    "ueberschrift": "Weniger Papier zwischen Auftrag und Auslieferung.",
+    "intro": "Vier Abläufe aus Vertrieb, Buchhaltung und Service – so, wie sie bei Nordwerk laufen könnten. Klicken Sie einen an und sehen Sie zu.",
+    "cta": "Ablauf ansehen",
+    "abschlussTitel": "Womit fangen wir an?",
+    "abschlussText": "Wir bilden einen dieser Abläufe mit Ihren echten Belegen nach – ohne Anbindung an Ihre Systeme, ohne Aufwand auf Ihrer Seite."
+  },
+  "kontakt": {
+    "name": "Sebastian Blessing",
+    "rolle": "Blessing Marketing",
+    "mail": "sebastian@blessing-marketing.de"
+  },
+  "useCases": ["angebot", "rechnung", "posteingang", "wissen"]
+}

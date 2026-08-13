@@ -1,0 +1,29 @@
+{
+  "slug": "helia",
+  "name": "Helia Pflegegruppe",
+  "branche": "Ambulante Pflege und Betreuung",
+  "logo": { "text": "Helia" },
+  "farben": {
+    "primaer": "#1b7f79",
+    "akzent": "#e0794a",
+    "ink": "#1d2422",
+    "flaeche": "#f6f4f0",
+    "papier": "#ffffff"
+  },
+  "schriften": { "display": "fraunces", "text": "manrope", "mono": "jetbrains" },
+  "radius": 16,
+  "texte": {
+    "eyebrow": "Mehr Zeit für Menschen",
+    "ueberschrift": "Verwaltung, die nicht am Pflegepersonal hängen bleibt.",
+    "intro": "Drei Abläufe, die heute Abende und Wochenenden kosten. Sehen Sie zu, wie sie ohne Zutun durchlaufen.",
+    "cta": "Ablauf ansehen",
+    "abschlussTitel": "Wo drückt es bei Ihnen am meisten?",
+    "abschlussText": "Wir schauen uns einen Ablauf gemeinsam an und zeigen, was davon realistisch automatisch laufen kann."
+  },
+  "kontakt": {
+    "name": "Sebastian Blessing",
+    "rolle": "Blessing Marketing",
+    "mail": "sebastian@blessing-marketing.de"
+  },
+  "useCases": ["posteingang", "onboarding", "wissen"]
+}

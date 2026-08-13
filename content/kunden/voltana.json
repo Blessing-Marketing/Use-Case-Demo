@@ -1,0 +1,30 @@
+{
+  "slug": "voltana",
+  "name": "Voltana Energie",
+  "branche": "Photovoltaik und Speicherlösungen",
+  "logo": { "text": "VOLTANA" },
+  "farben": {
+    "primaer": "#f2b705",
+    "akzent": "#5ee0a0",
+    "ink": "#eef2ec",
+    "flaeche": "#12160f",
+    "papier": "#1b2018",
+    "buehne": "#0a0d08"
+  },
+  "schriften": { "display": "sora", "text": "dmSans", "mono": "jetbrains" },
+  "radius": 10,
+  "texte": {
+    "eyebrow": "Automatisierung für Voltana",
+    "ueberschrift": "Vom Interessenten zur Anlage, ohne Reibungsverlust.",
+    "intro": "Drei Abläufe aus dem Tagesgeschäft – vom ersten Formular bis zur geprüften Rechnung. Zum Zuschauen, nicht zum Nachlesen.",
+    "cta": "Ablauf ansehen",
+    "abschlussTitel": "Welcher Ablauf kostet Sie gerade am meisten Zeit?",
+    "abschlussText": "Wir bauen ihn mit Ihren echten Anfragen nach und zeigen das Ergebnis in zwei Wochen."
+  },
+  "kontakt": {
+    "name": "Sebastian Blessing",
+    "rolle": "Blessing Marketing",
+    "mail": "sebastian@blessing-marketing.de"
+  },
+  "useCases": ["lead", "angebot", "rechnung"]
+}

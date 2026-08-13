@@ -1,26 +1,245 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ---------------------------------------------------------------------------
+   Token-Vertrag
+   Ein Kunde liefert 3-4 Farben. Alles andere leitet sich ab.
+   Die Overrides werden per inline-style auf [data-brand] gesetzt.
+--------------------------------------------------------------------------- */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-surface: var(--c-surface);
+  --color-paper: var(--c-paper);
+  --color-ink: var(--c-ink);
+  --color-muted: var(--c-muted);
+  --color-faint: var(--c-faint);
+  --color-line: var(--c-line);
+  --color-primary: var(--c-primary);
+  --color-primary-soft: var(--c-primary-soft);
+  --color-on-primary: var(--c-on-primary);
+  --color-accent: var(--c-accent);
+  --color-accent-soft: var(--c-accent-soft);
+  /* Für Beschriftungen: der Akzent, auf Lesbarkeit gebracht. Flächen
+     (bg-accent, border-accent) behalten die ungefilterte Markenfarbe. */
+  --color-accent-text: var(--c-accent-text);
+  --color-accent-stage: var(--c-accent-stage);
+  --color-stage: var(--c-stage);
+  --color-stage-line: var(--c-stage-line);
+  --color-stage-ink: var(--c-stage-ink);
+  --color-stage-muted: var(--c-stage-muted);
+  --color-stage-primary: var(--c-stage-primary);
+
+  --font-display: var(--f-display);
+  --font-body: var(--f-body);
+  --font-mono: var(--f-mono);
+
+  --radius-brand: var(--r);
+  --radius-brand-sm: var(--r-sm);
+  --radius-brand-lg: var(--r-lg);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root,
+[data-brand] {
+  /* Haus-Marke als Fallback: Aluminium / Petrol / Signal */
+  --c-surface: #e9ecea;
+  --c-paper: #ffffff;
+  --c-ink: #101418;
+  --c-primary: #0c6b5e;
+  --c-on-primary: #ffffff;
+  --c-accent: #ff5c16;
+  --c-accent-text: #a3350a;
+  --c-accent-stage: #ff5c16;
+  --c-stage: #0e1216;
+  --c-stage-ink: #eef1ef;
+
+  --r: 4px;
+  --r-sm: calc(var(--r) * 0.6);
+  --r-lg: calc(var(--r) * 2);
+
+  --f-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --f-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --f-mono: var(--font-jetbrains), ui-monospace, monospace;
+}
+
+/* Abgeleitete Tokens - müssen auf derselben Ebene stehen wie die Overrides,
+   sonst rechnet color-mix noch mit den :root-Werten. */
+:root,
+[data-brand] {
+  /* Die Mischungen sind so gewählt, dass auch Kleintext über 4,5:1 bleibt
+     (WCAG AA) - und zwar für jede Kundenfarbe, nicht nur für die Hausmarke. */
+  --c-muted: color-mix(in oklab, var(--c-ink) 76%, var(--c-surface));
+  --c-faint: color-mix(in oklab, var(--c-ink) 62%, var(--c-surface));
+  --c-line: color-mix(in oklab, var(--c-ink) 13%, var(--c-surface));
+  --c-primary-soft: color-mix(in oklab, var(--c-primary) 12%, var(--c-paper));
+  --c-accent-soft: color-mix(in oklab, var(--c-accent) 14%, var(--c-paper));
+  --c-stage-line: color-mix(in oklab, var(--c-stage-ink) 16%, var(--c-stage));
+  --c-stage-muted: color-mix(in oklab, var(--c-stage-ink) 74%, var(--c-stage));
+  /* Primärfarbe auf der Bühne: viele Marken haben ein dunkles Blau oder Grün,
+     das auf Schwarz nicht mehr lesbar wäre. */
+  --c-stage-primary: color-mix(in oklab, var(--c-primary) 42%, var(--c-stage-ink));
+  --c-stage-raster: color-mix(in oklab, var(--c-stage-ink) 7%, var(--c-stage));
+}
+
+* {
+  border-color: var(--c-line);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font-family: var(--f-body);
+  font-feature-settings: "cv05" 1, "ss01" 1;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--c-accent);
+  color: var(--c-paper);
+}
+
+:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+   Typografie
+--------------------------------------------------------------------------- */
+
+.t-display {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-stretch: 88%;
+  letter-spacing: -0.03em;
+  line-height: 0.94;
+  text-wrap: balance;
+}
+
+.t-eyebrow {
+  font-family: var(--f-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.t-mono {
+  font-family: var(--f-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.t-lead {
+  text-wrap: pretty;
+  line-height: 1.55;
+}
+
+/* ---------------------------------------------------------------------------
+   Bühne (Maschinenraum) - dunkle Fläche mit Hairline-Raster
+--------------------------------------------------------------------------- */
+
+.stage-grid {
+  background-color: var(--c-stage);
+  background-image:
+    linear-gradient(to right, var(--c-stage-raster) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--c-stage-raster) 1px, transparent 1px);
+  background-size: 56px 56px;
+  background-position: -1px -1px;
+}
+
+.stage-fade {
+  mask-image: radial-gradient(120% 100% at 50% 0%, #000 45%, transparent 100%);
+}
+
+/* ---------------------------------------------------------------------------
+   Bewegung
+--------------------------------------------------------------------------- */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--c-accent) 55%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 9px color-mix(in oklab, var(--c-accent) 0%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--c-accent) 0%, transparent);
+  }
+}
+
+@keyframes sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.anim-rise {
+  animation: rise 0.42s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+.anim-slide {
+  animation: slide-in 0.34s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+.anim-ring {
+  animation: pulse-ring 1.6s ease-out infinite;
+}
+
+.anim-sweep::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--c-accent) 22%, transparent),
+    transparent
+  );
+  animation: sweep 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Schmale Scrollbars in der Bühne */
+.thin-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-stage-line) transparent;
 }

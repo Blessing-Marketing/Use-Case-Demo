@@ -1,68 +1,127 @@
-import Image from "next/image";
+import Link from "next/link";
+import { alleKunden, kundenFehler } from "@/lib/kunden";
+import { markenVariablen } from "@/lib/marke";
+import { ALLE_USE_CASES, useCasesFuer } from "@/lib/usecases";
 
-export default function Home() {
+export default function Uebersicht() {
+  const kunden = alleKunden();
+  const fehler = kundenFehler();
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="min-h-dvh bg-surface text-ink">
+      <header className="border-b border-line">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-5">
+          <div className="flex items-baseline gap-3">
+            <span className="t-display text-[1.3rem]" style={{ fontStretch: "92%" }}>
+              Demo-System
+            </span>
+            <span className="t-mono text-[0.68rem] text-faint">interne Übersicht</span>
+          </div>
+          <Link
+            href="/studio"
+            className="t-mono rounded-brand-sm bg-primary px-4 py-2 text-[0.72rem] text-on-primary transition-opacity hover:opacity-90"
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            Neuen Kunden anlegen
+          </Link>
         </div>
+      </header>
+
+      <main className="mx-auto max-w-5xl px-6 py-14">
+        <p className="t-eyebrow text-accent">Für den Vertrieb</p>
+        <h1 className="t-display mt-4 max-w-2xl text-[clamp(2.2rem,5vw,3.4rem)]">
+          Dieselben Abläufe, im Erscheinungsbild des Kunden.
+        </h1>
+        <p className="t-lead mt-5 max-w-2xl text-muted">
+          Jede Demo zeigt {ALLE_USE_CASES.length} mögliche Abläufe als Lauf über Stationen, mit
+          Zeitvergleich. Für einen neuen Kunden wird nur das Branding getauscht – die Abläufe
+          bleiben.
+        </p>
+
+        {fehler.length ? (
+          <div className="mt-10 rounded-brand border border-accent bg-accent-soft p-5">
+            <p className="font-medium">
+              {fehler.length} Kundendatei{fehler.length === 1 ? "" : "en"} wird übersprungen
+            </p>
+            <ul className="mt-3 space-y-1">
+              {fehler.map((f) => (
+                <li key={f.datei} className="t-mono text-[0.74rem] leading-relaxed">
+                  content/kunden/{f.datei} – {f.grund}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        <section className="mt-14">
+          <div className="mb-5 flex items-baseline justify-between">
+            <h2 className="t-eyebrow text-muted">Angelegte Demos</h2>
+            <span className="t-mono text-[0.7rem] text-faint">{kunden.length}</span>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            {kunden.map((k) => {
+              const anzahl = useCasesFuer(k.useCases).length;
+              return (
+                <Link
+                  key={k.slug}
+                  href={`/kunde/${k.slug}`}
+                  className="group rounded-brand border border-line bg-paper p-5 transition-colors hover:border-primary"
+                >
+                  <div
+                    style={markenVariablen(k)}
+                    className="mb-4 flex h-16 items-center justify-between gap-3 rounded-brand-sm bg-surface px-4"
+                  >
+                    <span
+                      className="t-display truncate text-[1.05rem] text-ink"
+                      style={{ fontStretch: "92%" }}
+                    >
+                      {k.logo.text}
+                    </span>
+                    <span className="flex shrink-0 gap-1.5">
+                      <span className="h-6 w-6 rounded-full" style={{ background: k.farben.primaer }} />
+                      <span className="h-6 w-6 rounded-full" style={{ background: k.farben.akzent }} />
+                      <span
+                        className="h-6 w-6 rounded-full border"
+                        style={{ background: k.farben.papier, borderColor: k.farben.ink }}
+                      />
+                    </span>
+                  </div>
+                  <p className="text-[1rem] font-medium transition-colors group-hover:text-primary">
+                    {k.name}
+                  </p>
+                  <p className="t-mono mt-1.5 text-[0.68rem] text-faint">
+                    /kunde/{k.slug} · {anzahl} Abläufe
+                    {k.branche ? ` · ${k.branche}` : ""}
+                  </p>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="mt-16 grid gap-4 border-t border-line pt-10 sm:grid-cols-3">
+          <div>
+            <p className="t-eyebrow mb-2 text-accent">Kunde anlegen</p>
+            <p className="text-[0.86rem] leading-relaxed text-muted">
+              Im Studio die Kundenwebsite eintragen. Logo, Farben und Schriften werden ausgelesen,
+              der Rest ist Feinschliff.
+            </p>
+          </div>
+          <div>
+            <p className="t-eyebrow mb-2 text-accent">Sofort verschicken</p>
+            <p className="text-[0.86rem] leading-relaxed text-muted">
+              Der Vorschau-Link enthält die komplette Marke und funktioniert ohne Veröffentlichung.
+            </p>
+          </div>
+          <div>
+            <p className="t-eyebrow mb-2 text-accent">Ablauf ergänzen</p>
+            <p className="text-[0.86rem] leading-relaxed text-muted">
+              Neue Abläufe sind reine Datendateien unter{" "}
+              <span className="t-mono text-ink">lib/usecases/</span>. Ab dann stehen sie jedem
+              Kunden zur Verfügung.
+            </p>
+          </div>
+        </section>
       </main>
     </div>
   );

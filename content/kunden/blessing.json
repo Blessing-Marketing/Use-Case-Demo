@@ -1,0 +1,28 @@
+{
+  "slug": "blessing",
+  "name": "Blessing Marketing",
+  "branche": "Hausmarke – Vorlage für neue Kunden",
+  "logo": { "text": "Blessing" },
+  "farben": {
+    "primaer": "#0c6b5e",
+    "akzent": "#ff5c16",
+    "ink": "#101418",
+    "flaeche": "#e9ecea"
+  },
+  "schriften": { "display": "bricolage", "text": "inter", "mono": "jetbrains" },
+  "radius": 4,
+  "texte": {
+    "eyebrow": "Abläufe automatisieren",
+    "ueberschrift": "Arbeit, die sich selbst erledigt.",
+    "intro": "Sechs Abläufe aus dem Alltag mittelständischer Unternehmen. Jeder einmal von Hand und einmal automatisch – zum Zuschauen, ohne Technikkenntnisse.",
+    "cta": "Demo ansehen",
+    "abschlussTitel": "Welchen Ablauf schauen wir uns bei Ihnen an?",
+    "abschlussText": "Wir bauen einen dieser Abläufe mit Ihren echten Daten nach. Unverbindlich, in rund zwei Wochen."
+  },
+  "kontakt": {
+    "name": "Sebastian Blessing",
+    "rolle": "Blessing Marketing",
+    "mail": "sebastian@blessing-marketing.de"
+  },
+  "useCases": ["posteingang", "angebot", "rechnung", "lead", "onboarding", "wissen"]
+}

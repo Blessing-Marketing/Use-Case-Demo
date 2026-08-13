@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Kundendaten gehören nicht ins Repo.
+# Angelegte Kunden bleiben lokal und werden als Vorschau-Link verschickt.
+# Ausgenommen sind die vier erfundenen Beispielkunden.
+/content/kunden/*.json
+!/content/kunden/blessing.json
+!/content/kunden/nordwerk.json
+!/content/kunden/helia.json
+!/content/kunden/voltana.json
+
+# Kopierte Kundenlogos
+/public/logos/
