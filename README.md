@@ -242,6 +242,13 @@ Container läuft und gilt als gesund? Port auf `3000` gestellt? Als Build Pack *
 gewählt – bei Nixpacks wird das `Dockerfile` samt seiner Vorgaben ignoriert, dann müssen
 `DEMO_DATEN_PFAD` und `DEMO_STUDIO_SCHREIBEN` von Hand gesetzt werden.
 
+**`HOSTNAME` nicht überschreiben.** Docker belegt diese Variable im Container mit der
+Container-Kennung, und der Next-Server bindet genau darauf. Er läuft dann zwar und meldet
+„Ready", ist über `127.0.0.1` aber nicht erreichbar – der Healthcheck bekommt
+`Connection refused`, es entsteht keine Route, im Browser steht 404. Deshalb setzt der
+Startbefehl im `Dockerfile` `HOSTNAME=0.0.0.0` selbst; eine Vorgabe per `ENV` würde von der
+Betriebsumgebung überstimmt.
+
 Direkt am Container vorbei prüfen, ob die Anwendung selbst läuft:
 
 ```bash

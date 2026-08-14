@@ -22,7 +22,6 @@ WORKDIR /app
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     PORT=3000 \
-    HOSTNAME=0.0.0.0 \
     DEMO_DATEN_PFAD=/daten \
     DEMO_STUDIO_SCHREIBEN=1
 
@@ -43,4 +42,9 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=25s --retries=3 \
     CMD wget -q -O /dev/null http://127.0.0.1:3000/api/gesundheit || exit 1
 
-CMD ["node", "server.js"]
+# HOSTNAME wird hier gesetzt und nicht per ENV: Docker belegt die Variable im
+# Container selbst mit der Container-Kennung, und der Next-Server bindet genau
+# darauf. Er läuft dann zwar, ist über 127.0.0.1 aber nicht erreichbar - der
+# Healthcheck scheitert und es kommt gar keine Route zustande.
+# exec, damit node PID 1 wird und Stop-Signale sauber bekommt.
+CMD ["sh", "-c", "HOSTNAME=0.0.0.0 exec node server.js"]
