@@ -38,4 +38,9 @@ COPY --from=bauen --chown=weiter:knoten /app/.next/static ./.next/static
 USER weiter
 EXPOSE 3000
 
+# Ohne diesen Endpunkt würde ein Healthcheck auf "/" landen und dort 401 oder
+# 503 bekommen - der Container gälte als ungesund und bekäme keine Route.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=25s --retries=3 \
+    CMD wget -q -O /dev/null http://127.0.0.1:3000/api/gesundheit || exit 1
+
 CMD ["node", "server.js"]

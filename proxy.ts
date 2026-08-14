@@ -15,6 +15,7 @@ const OEFFENTLICH = [
   /^\/vorschau(\/|$)/, // teilbarer Entwurf, Marke steckt in der Adresse
   /^\/logos\//, // Kundenlogos auf diesen Seiten
   /^\/api\/bild(\/|$)/, // Logos in Vorschau-Links
+  /^\/api\/gesundheit$/, // Healthcheck des Containers
 ];
 
 /** Vergleich ohne früh abzubrechen, damit die Laufzeit nichts verrät. */

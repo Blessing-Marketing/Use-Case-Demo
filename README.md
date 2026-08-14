@@ -222,6 +222,32 @@ Das Abbild setzt `DEMO_DATEN_PFAD` und `DEMO_STUDIO_SCHREIBEN` bereits vor; nöt
 Volume und das Passwort. Der Container läuft als Benutzer `weiter` (UID 1001) – das Volume muss
 für ihn beschreibbar sein.
 
+**Healthcheck:** `/api/gesundheit` – ohne Passwort erreichbar, antwortet immer mit 200. Prüft die
+Betriebsumgebung stattdessen `/`, bekommt sie 401 oder 503, hält den Container für ungesund und
+hängt keine Route ein. Das Ergebnis wäre ein 404 im Browser.
+
+### Bei 404 nach dem Deploy
+
+Erst feststellen, wessen 404 das ist – beim Aufruf der nackten Domain:
+
+| Was im Browser steht | Bedeutung |
+| --- | --- |
+| Passwortabfrage erscheint | Alles in Ordnung, die Anwendung läuft. |
+| „Kein Zugang eingerichtet …" | Läuft, aber `DEMO_PASSWORT` fehlt. |
+| Schlichtes `404 page not found` | **Traefik kennt die Route nicht.** Die Anwendung wird gar nicht erreicht. |
+| Gestaltete 404-Seite im Kundendesign | Die Anwendung läuft, nur dieser Pfad existiert nicht. |
+
+Beim Traefik-404 der Reihe nach: Domain im Coolify-Projekt eingetragen und DNS zeigt auf die VPS?
+Container läuft und gilt als gesund? Port auf `3000` gestellt? Als Build Pack **Dockerfile**
+gewählt – bei Nixpacks wird das `Dockerfile` samt seiner Vorgaben ignoriert, dann müssen
+`DEMO_DATEN_PFAD` und `DEMO_STUDIO_SCHREIBEN` von Hand gesetzt werden.
+
+Direkt am Container vorbei prüfen, ob die Anwendung selbst läuft:
+
+```bash
+docker exec -it <container> wget -qO- http://127.0.0.1:3000/api/gesundheit
+```
+
 ### Was offen ist und was nicht
 
 [proxy.ts](proxy.ts) verlangt für alles ein Passwort, **außer**:
