@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Befund } from "@/lib/erfassen";
 import { hatZusatz, mitZusatz, ohneZusatz } from "@/lib/kuerzel";
@@ -366,6 +367,20 @@ export function Studio({
       <header className="sticky top-0 z-20 border-b border-line bg-surface/95 backdrop-blur">
         <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-baseline gap-3">
+            <Link
+              href="/"
+              className="t-mono inline-flex items-center gap-1.5 text-[0.72rem] text-muted transition-colors hover:text-primary"
+            >
+              <svg viewBox="0 0 16 8" className="h-2 w-4" aria-hidden>
+                <path
+                  d="M16 4H3m0 0 3.5-3.5M3 4l3.5 3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.4"
+                />
+              </svg>
+              Übersicht
+            </Link>
             <span className="t-display text-[1.25rem]" style={{ fontStretch: "92%" }}>
               Studio
             </span>
