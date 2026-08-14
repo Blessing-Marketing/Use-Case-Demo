@@ -238,9 +238,28 @@ Erst feststellen, wessen 404 das ist – beim Aufruf der nackten Domain:
 | Gestaltete 404-Seite im Kundendesign | Die Anwendung läuft, nur dieser Pfad existiert nicht. |
 
 Beim Traefik-404 der Reihe nach: Domain im Coolify-Projekt eingetragen und DNS zeigt auf die VPS?
-Container läuft und gilt als gesund? Port auf `3000` gestellt? Als Build Pack **Dockerfile**
-gewählt – bei Nixpacks wird das `Dockerfile` samt seiner Vorgaben ignoriert, dann müssen
-`DEMO_DATEN_PFAD` und `DEMO_STUDIO_SCHREIBEN` von Hand gesetzt werden.
+Container läuft und gilt als gesund? Als Build Pack **Dockerfile** gewählt – bei Nixpacks wird das
+`Dockerfile` samt seiner Vorgaben ignoriert, dann müssen `DEMO_DATEN_PFAD` und
+`DEMO_STUDIO_SCHREIBEN` von Hand gesetzt werden.
+
+**Gesunder Container und trotzdem 404?** Dann fehlt das Zertifikat. Nachsehen, was der Server
+ausliefert:
+
+```bash
+echo | openssl s_client -connect <domain>:443 -servername <domain> 2>/dev/null \
+  | openssl x509 -noout -subject -issuer
+```
+
+Steht dort `CN=TRAEFIK DEFAULT CERT`, konnte Let's Encrypt kein Zertifikat ausstellen. Es gibt
+dann keinen HTTPS-Router für den Host, während die HTTP-Adresse per 301 genau dorthin weiterleitet
+– die Weiterleitung läuft ins Leere.
+
+Typischer Auslöser sind die von Coolify vergebenen `*.sslip.io`-Adressen. Abhilfe ist eine echte
+Domain: einen A-Eintrag wie `demo.example.de` auf die VPS zeigen lassen und in Coolify eintragen.
+Das ist ohnehin nötig, denn eine Adresse wie `azr7dp…187.77.79.4.sslip.io` klickt kein Kunde an.
+
+`Force HTTPS` abzuschalten hilft für einen schnellen Test, taugt aber nicht dauerhaft: der
+Zugangsschutz arbeitet mit Basic Auth, und die überträgt das Passwort über HTTP im Klartext.
 
 Zwei Fallen führen zu genau diesem 404, obwohl Build und Anwendung in Ordnung sind. Beide sind
 im `Dockerfile` behandelt, hier zum Nachlesen:
