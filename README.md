@@ -186,22 +186,29 @@ die angegebene Laufzeit zur Summe der Stationsdauern passt.
 Eine unbrauchbare Datei in `content/kunden/` legt nichts lahm: sie wird übersprungen und in der
 Übersicht sowie im Studio gemeldet.
 
-Deploy auf Vercel: Repository verbinden, keine Umgebungsvariablen nötig. Kundenseiten werden beim
-Bauen statisch erzeugt, Vorschau und die beiden API-Routen laufen zur Laufzeit.
+## Betriebsmodell: lokales Werkzeug
 
-### Vor einem öffentlichen Deploy bedenken
+Das System läuft bewusst auf dem Rechner des Vertriebs, nicht auf einem Server:
 
-Innerhalb einer Kundendemo führt kein Link zu einem anderen Kunden – dort gibt es nur Abläufe
-derselben Marke, `mailto:` und einen Seitenanker. Offen sind dagegen die Adressen selbst:
+- Kunden werden im Studio angelegt und liegen als JSON in `content/kunden/`. **Diese Dateien sind
+  von der Versionsverwaltung ausgeschlossen** – im Repo stehen nur die vier erfundenen
+  Beispielkunden.
+- Verschickt wird der **Vorschau-Link**. Er enthält die komplette Marke kodiert in der Adresse und
+  braucht weder Veröffentlichung noch Zugang zum Repo.
+- Deshalb ist der Schreibzugriff des Studios kein Problem: lokal ist das Dateisystem beschreibbar.
 
-- `/` listet alle angelegten Kunden auf. Wer die Domain ohne Pfad aufruft, sieht jedes Projekt.
-- `/studio`, `/api/marke-erfassen` und sprechende Kürzel wie `/kunde/nordwerk` sind frei
-  erreichbar bzw. ratbar.
-- `robots: noindex` ist gesetzt – das hält Suchmaschinen fern, ist aber keine Zugangssperre.
+## Offene Punkte für den Serverbetrieb
 
-Bewusst so belassen. Wird das Projekt öffentlich erreichbar, sind die naheliegenden Schritte: `/`,
-`/studio` und `/api/marke-erfassen` per Middleware hinter ein Passwort legen (`/api/bild` muss
-offen bleiben, sonst fehlen die Logos auf den Kundenseiten) und den Kundenkürzeln einen
-Zufallszusatz geben. Alternativ nur Vorschau-Links verschicken – die sind praktisch nicht zu raten.
+Erst relevant, wenn das System auf einem Server läuft. Bis dahin bewusst offen gelassen.
+
+| Punkt | Worum es geht |
+| --- | --- |
+| **Speicher** | Auf Vercel ist das Dateisystem zur Laufzeit schreibgeschützt – das Studio kann dort nichts anlegen. Kundendaten dürfen laut Festlegung auch nicht ins Repo. Es braucht also einen Speicher daneben, z. B. Vercel Blob. |
+| **Logos** | [lib/logos.ts](lib/logos.ts) kopiert Logos beim Speichern nach `public/logos/`. Für Vorschau-Links greift das nicht, weil die Datei nur lokal existiert – dort läuft das Logo weiter über `/api/bild` vom Kundenserver. Löst sich mit dem Speicher oben mit. |
+| **Bild-Proxy** | `/api/bild` weist interne Adressen, Weiterleitungen ins interne Netz und fremde Schemata ab, nimmt aber beliebige öffentliche Bildadressen an. Auf einem Server wäre das ein offener Proxy. Lösung: Adressen serverseitig mit einem HMAC unterschreiben und nur unterschriebene annehmen. |
+| **Zugang** | `/` listet alle Kunden, `/studio` und `/api/marke-erfassen` sind frei erreichbar, Kürzel wie `/kunde/nordwerk` sind ratbar. `robots: noindex` hält Suchmaschinen fern, ersetzt aber keine Zugangssperre. Naheliegend: Passwort per Middleware auf `/`, `/studio` und `/api/marke-erfassen`; `/api/bild` muss erreichbar bleiben. |
+
+Innerhalb einer Kundendemo führt dagegen kein Link zu einem anderen Kunden – dort gibt es nur
+Abläufe derselben Marke, `mailto:` und einen Seitenanker.
 
 Alle in den Demos gezeigten Daten sind erfunden. Es gibt keine Anbindung an Kundensysteme.
