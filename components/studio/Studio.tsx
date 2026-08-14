@@ -621,19 +621,19 @@ export function Studio({
                   <div>
                     <p className="t-eyebrow mb-2 text-faint">Gefundene Bildmarken</p>
                     <div className="flex flex-wrap gap-2">
+                      {/* Die Adressen kommen fertig unterschrieben vom Server –
+                          im Browser lässt sich nicht unterschreiben. */}
                       {befund.logos.map((l) => (
                         <button
-                          key={l}
+                          key={l.quelle}
                           type="button"
-                          onClick={() =>
-                            aendern({ logo: { bild: `/api/bild?u=${encodeURIComponent(l)}`, hoehe: 30 } })
-                          }
+                          onClick={() => aendern({ logo: { bild: l.adresse, hoehe: 30 } })}
                           className="flex h-12 w-20 items-center justify-center rounded-brand-sm border border-line bg-white p-1.5 transition-colors hover:border-primary"
-                          title={l}
+                          title={l.quelle}
                         >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
-                            src={`/api/bild?u=${encodeURIComponent(l)}`}
+                            src={l.adresse}
                             alt=""
                             className="max-h-full max-w-full object-contain"
                           />

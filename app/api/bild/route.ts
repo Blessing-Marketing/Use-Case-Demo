@@ -1,3 +1,4 @@
+import { unterschriftGueltig } from "@/lib/bildsignatur";
 import { ErfassungsFehler, normalisiereUrl } from "@/lib/erfassen";
 import { NetzFehler, sichererAbruf } from "@/lib/netzschutz";
 
@@ -10,8 +11,15 @@ const ERLAUBT = /^image\/(png|jpeg|jpg|gif|webp|avif|svg\+xml|x-icon|vnd\.micros
  * Hotlink-Sperren oder gemischten Inhalten, und die Demo sieht kaputt aus.
  */
 export async function GET(request: Request) {
-  const ziel = new URL(request.url).searchParams.get("u");
+  const anfrage = new URL(request.url).searchParams;
+  const ziel = anfrage.get("u");
   if (!ziel) return new Response("Fehlender Parameter u", { status: 400 });
+
+  // Nur selbst unterschriebene Adressen: sonst wäre das ein offener Proxy,
+  // über den jeder beliebige Bilder auf unsere Kosten ausliefern kann.
+  if (!unterschriftGueltig(ziel, anfrage.get("s"))) {
+    return new Response("Adresse ohne gültige Unterschrift", { status: 403 });
+  }
 
   let url: URL;
   try {

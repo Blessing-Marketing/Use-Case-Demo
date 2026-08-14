@@ -57,6 +57,9 @@ das Branding. Bedienungsanleitung steht im README.
   `lib/pfade.ts` und werden über einen Route Handler ausgeliefert.
 - **Neue öffentliche Route?** In [proxy.ts](proxy.ts) eintragen, sonst verlangt sie ein Passwort.
   Umgekehrt gilt: alles Neue ist standardmäßig geschützt – das ist die richtige Richtung.
+- **Bildadressen für `/api/bild` nie von Hand zusammenbauen**, sondern `bildAdresse()` aus
+  [lib/bildsignatur.ts](lib/bildsignatur.ts) verwenden. Ohne Unterschrift weist der Proxy ab, und
+  im Browser lässt sich nicht unterschreiben – solche Adressen müssen serverseitig entstehen.
 
 ### Nach Änderungen
 

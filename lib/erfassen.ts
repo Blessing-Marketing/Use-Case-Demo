@@ -1,3 +1,4 @@
+import { bildAdresse } from "./bildsignatur";
 import { farbtonAbstand, isHex, istMarkenfarbe, toHex, toHsl } from "./color";
 import { schriftSchluessel } from "./schriften";
 import type { MarkeEingabe } from "./marke";
@@ -29,7 +30,8 @@ export type Befund = {
     /** Erkannt, aber nicht auslieferbar. */
     fehlend: string[];
   };
-  logos: string[];
+  /** Gefundene Bildmarken: Originaladresse und fertige Proxy-Adresse. */
+  logos: { quelle: string; adresse: string }[];
   hinweise: string[];
 };
 
@@ -496,9 +498,10 @@ export async function markeErfassen(eingabe: string): Promise<Befund> {
   const ogBild = absolut(endUrl, metaWert("og:image", "property"));
   if (ogBild) merke(ogBild, 5);
 
+  // Die Proxy-Adresse entsteht hier, weil nur der Server unterschreiben kann.
   const logoKandidaten = Array.from(logoPunkte.entries())
     .sort((a, b) => b[1] - a[1])
-    .map(([u]) => u);
+    .map(([quelle]) => ({ quelle, adresse: bildAdresse(quelle) }));
 
   if (!primaer) hinweise.push("Keine eindeutige Markenfarbe gefunden – bitte von Hand setzen.");
   if (verfuegbar.length) {
@@ -543,9 +546,7 @@ export function befundAlsMarke(befund: Befund, slug: string): MarkeEingabe {
     slug,
     name: befund.name,
     quelle: befund.quelle,
-    logo: befund.logos[0]
-      ? { bild: `/api/bild?u=${encodeURIComponent(befund.logos[0])}`, hoehe: 30 }
-      : { text: befund.name },
+    logo: befund.logos[0] ? { bild: befund.logos[0].adresse, hoehe: 30 } : { text: befund.name },
     farben: {
       primaer: befund.farben.primaer ?? "#0c6b5e",
       akzent: befund.farben.akzent,

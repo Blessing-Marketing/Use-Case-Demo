@@ -240,6 +240,7 @@ anlegen, dann:
 | `DEMO_STUDIO_SCHREIBEN` | `1` | Erlaubt dem Studio das Anlegen und Löschen. Ohne sie ist es nur lesend. |
 | `DEMO_PASSWORT` | frei wählen | Zugang zum internen Bereich. **Fehlt sie im Produktionsbetrieb, sind die internen Seiten gesperrt** (503), nicht etwa offen. |
 | `DEMO_BENUTZER` | optional | Benutzername für die Anmeldung. Ohne die Variable zählt allein das Passwort, im Anmeldedialog darf dann ein beliebiger Name stehen. |
+| `DEMO_BILD_SCHLUESSEL` | optional | Schlüssel für die Unterschrift der Bildadressen (siehe unten). Ohne die Variable dient das Zugangspasswort als Schlüssel – dann machen Passwortwechsel die Logos in bereits verschickten Vorschau-Links ungültig. |
 
 Das Abbild setzt `DEMO_DATEN_PFAD` und `DEMO_STUDIO_SCHREIBEN` bereits vor; nötig ist nur das
 Volume und das Passwort. Der Container läuft als Benutzer `weiter` (UID 1001) – das Volume muss
@@ -325,12 +326,28 @@ meiden `0`, `O`, `1`, `l` und `I`, damit die Adresse auch am Telefon vorlesbar b
 Im Studio lässt sich der Zusatz per Knopf entfernen oder neu würfeln; beim Bearbeiten eines
 bestehenden Kunden bleibt das Kürzel unverändert.
 
-### Noch offen
+### Der Bild-Proxy nimmt nur Unterschriebenes an
 
-`/api/bild` weist interne Adressen, Weiterleitungen ins interne Netz und fremde Schemata ab, nimmt
-aber beliebige öffentliche Bildadressen an – es muss offen bleiben, damit Vorschau-Links
-funktionieren. Auf einem erreichbaren Server ist das ein offener Bild-Proxy: fremde Bilder über
-die eigene Domain, auf eigene Bandbreite. Lösung wäre, die Adressen serverseitig mit einem HMAC zu
-unterschreiben und nur unterschriebene anzunehmen.
+`/api/bild` muss ohne Anmeldung erreichbar sein – die Logos in verschickten Vorschau-Links laufen
+darüber. Damit er kein offener Proxy ist, über den jeder fremde Bilder auf unsere Bandbreite
+ausliefert, unterschreibt der Server jede Adresse dort, wo sie entsteht:
+
+```text
+/api/bild?u=<adresse>&s=<unterschrift>
+```
+
+Die Unterschrift ist ein HMAC über die Adresse ([lib/bildsignatur.ts](lib/bildsignatur.ts)).
+Ohne gültige Unterschrift antwortet der Proxy mit 403; wer die Adresse austauscht und die
+Unterschrift stehen lässt, ebenso. Unterschrieben wird nur serverseitig – im Browser gibt es
+keinen Schlüssel, deshalb liefert die Erfassung bereits fertige Adressen an das Studio.
+
+Fehlt in der Produktion jeder Schlüssel, lehnt der Proxy alles ab, statt offen zu stehen. In der
+Entwicklung ohne eingerichteten Schlüssel entfällt die Prüfung, damit ohne Konfiguration
+gearbeitet werden kann.
+
+**Beim Umstellen:** Kundendateien, die noch eine unsignierte `/api/bild`-Adresse enthalten, zeigen
+kein Logo mehr. Das behebt sich beim nächsten Speichern von selbst, weil das Logo dabei ohnehin
+heruntergeladen und durch einen lokalen Pfad ersetzt wird. Bereits verschickte Vorschau-Links
+verlieren ihr Logo dauerhaft – der übrige Inhalt bleibt.
 
 Alle in den Demos gezeigten Daten sind erfunden. Es gibt keine Anbindung an Kundensysteme.
