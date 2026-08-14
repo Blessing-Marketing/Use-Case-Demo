@@ -39,8 +39,12 @@ EXPOSE 3000
 
 # Ohne diesen Endpunkt würde ein Healthcheck auf "/" landen und dort 401 oder
 # 503 bekommen - der Container gälte als ungesund und bekäme keine Route.
+#
+# Der Port darf nicht fest stehen: die Betriebsumgebung gibt über PORT einen
+# eigenen vor (Coolify etwa 3001). Ein fest verdrahteter Healthcheck fragt dann
+# den falschen Port und meldet "Connection refused", obwohl alles läuft.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=25s --retries=3 \
-    CMD wget -q -O /dev/null http://127.0.0.1:3000/api/gesundheit || exit 1
+    CMD wget -q -O /dev/null "http://127.0.0.1:${PORT:-3000}/api/gesundheit" || exit 1
 
 # HOSTNAME wird hier gesetzt und nicht per ENV: Docker belegt die Variable im
 # Container selbst mit der Container-Kennung, und der Next-Server bindet genau
