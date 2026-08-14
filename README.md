@@ -217,6 +217,7 @@ anlegen, dann:
 | `DEMO_DATEN_PFAD` | `/daten` | Kunden und Logos im Volume statt im Abbild. Fehlt sie, warnt das Studio sichtbar. |
 | `DEMO_STUDIO_SCHREIBEN` | `1` | Erlaubt dem Studio das Anlegen und Löschen. Ohne sie ist es nur lesend. |
 | `DEMO_PASSWORT` | frei wählen | Zugang zum internen Bereich. **Fehlt sie im Produktionsbetrieb, sind die internen Seiten gesperrt** (503), nicht etwa offen. |
+| `DEMO_BENUTZER` | optional | Benutzername für die Anmeldung. Ohne die Variable zählt allein das Passwort, im Anmeldedialog darf dann ein beliebiger Name stehen. |
 
 Das Abbild setzt `DEMO_DATEN_PFAD` und `DEMO_STUDIO_SCHREIBEN` bereits vor; nötig ist nur das
 Volume und das Passwort. Der Container läuft als Benutzer `weiter` (UID 1001) – das Volume muss

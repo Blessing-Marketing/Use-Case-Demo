@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { anmeldungGueltig } from "@/lib/zugang";
 
 /**
  * Zugangsschutz.
@@ -17,14 +18,6 @@ const OEFFENTLICH = [
   /^\/api\/bild(\/|$)/, // Logos in Vorschau-Links
   /^\/api\/gesundheit$/, // Healthcheck des Containers
 ];
-
-/** Vergleich ohne früh abzubrechen, damit die Laufzeit nichts verrät. */
-function sicherGleich(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let unterschied = 0;
-  for (let i = 0; i < a.length; i++) unterschied |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return unterschied === 0;
-}
 
 function abfrage(nachricht: string, status = 401) {
   return new NextResponse(nachricht, {
@@ -54,15 +47,12 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const kopf = request.headers.get("authorization") ?? "";
-  if (kopf.startsWith("Basic ")) {
-    try {
-      const entschluesselt = atob(kopf.slice(6));
-      const uebergeben = entschluesselt.slice(entschluesselt.indexOf(":") + 1);
-      if (sicherGleich(uebergeben, passwort)) return NextResponse.next();
-    } catch {
-      /* unbrauchbarer Kopf - wie kein Kopf behandeln */
-    }
+  // DEMO_BENUTZER ist freiwillig: ohne die Variable zählt allein das Passwort,
+  // und im Anmeldedialog darf ein beliebiger Name stehen.
+  const benutzer = process.env.DEMO_BENUTZER?.trim();
+
+  if (anmeldungGueltig(request.headers.get("authorization"), passwort, benutzer)) {
+    return NextResponse.next();
   }
 
   return abfrage("Zugang nur für das Vertriebsteam.");
