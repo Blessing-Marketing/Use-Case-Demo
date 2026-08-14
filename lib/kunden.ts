@@ -1,8 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { aufloesen, type Marke, type MarkeEingabe } from "./marke";
-
-const ORDNER = path.join(process.cwd(), "content", "kunden");
+import { KUNDEN_ORDNER as ORDNER } from "./pfade";
 
 export type Kundenfehler = { datei: string; grund: string };
 

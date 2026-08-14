@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { normalisiereUrl } from "./erfassen";
 import { sichererAbruf } from "./netzschutz";
+import { LOGO_ORDNER } from "./pfade";
 
 /**
  * Kundenlogos werden beim Speichern einmal heruntergeladen und danach von der
@@ -11,9 +12,13 @@ import { sichererAbruf } from "./netzschutz";
  * dessen Server: wird die Datei verschoben, fehlt das Logo - womöglich während
  * des Gesprächs. Nebenbei sieht der Kunde sonst in seinen Server-Logs jeden
  * einzelnen Aufruf der Demo.
+ *
+ * Die Dateien liegen neben den Kundendaten, nicht unter public/: was dort nach
+ * dem Bauen landet, wird im Produktionsbetrieb nicht mehr ausgeliefert.
+ * Zuständig ist app/logos/[datei]/route.ts.
  */
 
-const ORDNER = path.join(process.cwd(), "public", "logos");
+const ORDNER = LOGO_ORDNER;
 
 const ENDUNGEN: Record<string, string> = {
   "image/svg+xml": ".svg",

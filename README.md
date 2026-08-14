@@ -186,29 +186,65 @@ die angegebene Laufzeit zur Summe der Stationsdauern passt.
 Eine unbrauchbare Datei in `content/kunden/` legt nichts lahm: sie wird übersprungen und in der
 Übersicht sowie im Studio gemeldet.
 
-## Betriebsmodell: lokales Werkzeug
+## Wo die Daten liegen
 
-Das System läuft bewusst auf dem Rechner des Vertriebs, nicht auf einem Server:
+Kunden werden im Studio angelegt und liegen als JSON. **Sie sind von der Versionsverwaltung
+ausgeschlossen** – im Repo stehen nur die vier erfundenen Beispielkunden. Kopierte Logos ebenso.
 
-- Kunden werden im Studio angelegt und liegen als JSON in `content/kunden/`. **Diese Dateien sind
-  von der Versionsverwaltung ausgeschlossen** – im Repo stehen nur die vier erfundenen
-  Beispielkunden.
-- Verschickt wird der **Vorschau-Link**. Er enthält die komplette Marke kodiert in der Adresse und
-  braucht weder Veröffentlichung noch Zugang zum Repo.
-- Deshalb ist der Schreibzugriff des Studios kein Problem: lokal ist das Dateisystem beschreibbar.
+| | lokal | im Container |
+| --- | --- | --- |
+| Kunden | `content/kunden/` | `$DEMO_DATEN_PFAD/kunden/` |
+| Logos | `content/logos/` | `$DEMO_DATEN_PFAD/logos/` |
 
-## Offene Punkte für den Serverbetrieb
+Keine Seite wird vorgerendert. Ein Kunde, der im laufenden Betrieb angelegt oder geändert wird,
+ist sofort aktuell – ohne Neubau.
 
-Erst relevant, wenn das System auf einem Server läuft. Bis dahin bewusst offen gelassen.
+## Betrieb auf einem eigenen Server (Coolify)
 
-| Punkt | Worum es geht |
-| --- | --- |
-| **Speicher** | Auf Vercel ist das Dateisystem zur Laufzeit schreibgeschützt – das Studio kann dort nichts anlegen. Kundendaten dürfen laut Festlegung auch nicht ins Repo. Es braucht also einen Speicher daneben, z. B. Vercel Blob. |
-| **Logos** | [lib/logos.ts](lib/logos.ts) kopiert Logos beim Speichern nach `public/logos/`. Für Vorschau-Links greift das nicht, weil die Datei nur lokal existiert – dort läuft das Logo weiter über `/api/bild` vom Kundenserver. Löst sich mit dem Speicher oben mit. |
-| **Bild-Proxy** | `/api/bild` weist interne Adressen, Weiterleitungen ins interne Netz und fremde Schemata ab, nimmt aber beliebige öffentliche Bildadressen an. Auf einem Server wäre das ein offener Proxy. Lösung: Adressen serverseitig mit einem HMAC unterschreiben und nur unterschriebene annehmen. |
-| **Zugang** | `/` listet alle Kunden, `/studio` und `/api/marke-erfassen` sind frei erreichbar, Kürzel wie `/kunde/nordwerk` sind ratbar. `robots: noindex` hält Suchmaschinen fern, ersetzt aber keine Zugangssperre. Naheliegend: Passwort per Middleware auf `/`, `/studio` und `/api/marke-erfassen`; `/api/bild` muss erreichbar bleiben. |
+Im Repo liegt ein `Dockerfile` (Next im Standalone-Modus). In Coolify als Docker-Anwendung
+anlegen, dann:
 
-Innerhalb einer Kundendemo führt dagegen kein Link zu einem anderen Kunden – dort gibt es nur
-Abläufe derselben Marke, `mailto:` und einen Seitenanker.
+**Volume einhängen** – ohne das sind alle angelegten Kunden beim nächsten Deploy weg:
+
+```text
+/daten   →   dauerhaftes Volume
+```
+
+**Umgebungsvariablen:**
+
+| Variable | Wert | Wirkung |
+| --- | --- | --- |
+| `DEMO_DATEN_PFAD` | `/daten` | Kunden und Logos im Volume statt im Abbild. Fehlt sie, warnt das Studio sichtbar. |
+| `DEMO_STUDIO_SCHREIBEN` | `1` | Erlaubt dem Studio das Anlegen und Löschen. Ohne sie ist es nur lesend. |
+| `DEMO_PASSWORT` | frei wählen | Zugang zum internen Bereich. **Fehlt sie im Produktionsbetrieb, sind die internen Seiten gesperrt** (503), nicht etwa offen. |
+
+Das Abbild setzt `DEMO_DATEN_PFAD` und `DEMO_STUDIO_SCHREIBEN` bereits vor; nötig ist nur das
+Volume und das Passwort. Der Container läuft als Benutzer `weiter` (UID 1001) – das Volume muss
+für ihn beschreibbar sein.
+
+### Was offen ist und was nicht
+
+[proxy.ts](proxy.ts) verlangt für alles ein Passwort, **außer**:
+
+- `/kunde/…` – die verschickte Demo
+- `/vorschau…` – der teilbare Entwurf
+- `/logos/…` und `/api/bild` – die Logos auf diesen Seiten
+
+Gesperrt sind damit die Übersicht aller Kunden, das Studio und die Erfassungs-Route. Innerhalb
+einer Kundendemo führt ohnehin kein Link zu einem anderen Kunden – dort gibt es nur Abläufe
+derselben Marke, `mailto:` und einen Seitenanker.
+
+**Kundenkürzel sind ratbar.** Sie stammen aus der Domain: `festool.de` wird zu
+`/kunde/festool`. Wer wissen will, ob eine bestimmte Firma eine Demo bekommen hat, tippt den Namen
+ein. Solange das stört, ist der Vorschau-Link die Alternative – dessen kodierter Block ist nicht
+zu erraten.
+
+### Noch offen
+
+`/api/bild` weist interne Adressen, Weiterleitungen ins interne Netz und fremde Schemata ab, nimmt
+aber beliebige öffentliche Bildadressen an – es muss offen bleiben, damit Vorschau-Links
+funktionieren. Auf einem erreichbaren Server ist das ein offener Bild-Proxy: fremde Bilder über
+die eigene Domain, auf eigene Bandbreite. Lösung wäre, die Adressen serverseitig mit einem HMAC zu
+unterschreiben und nur unterschriebene anzunehmen.
 
 Alle in den Demos gezeigten Daten sind erfunden. Es gibt keine Anbindung an Kundensysteme.

@@ -49,6 +49,15 @@ das Branding. Bedienungsanleitung steht im README.
 - Mengenangaben nie mit `{zahl} {einheit}` zusammenbauen, sondern `mengeText()` verwenden, sonst
   entsteht „1 Eintritte".
 
+- **Keine Seite vorrendern, die Kundendaten zeigt.** `generateStaticParams` oder statisches
+  Rendern führt dazu, dass eine im Studio bearbeitete Demo online weiter die alte Fassung zeigt.
+  Betroffen sind `/`, `/studio` und `/kunde/…`; alle stehen auf `dynamic = "force-dynamic"`.
+- **Dateien nicht nach `public/` schreiben.** Was dort nach dem Bauen landet, wird im
+  Produktionsbetrieb nicht ausgeliefert (nachgemessen: 404). Laufzeit-Dateien gehören unter
+  `lib/pfade.ts` und werden über einen Route Handler ausgeliefert.
+- **Neue öffentliche Route?** In [proxy.ts](proxy.ts) eintragen, sonst verlangt sie ein Passwort.
+  Umgekehrt gilt: alles Neue ist standardmäßig geschützt – das ist die richtige Richtung.
+
 ### Nach Änderungen
 
 `npm test` und `npm run build` – der Typcheck läuft im Build mit. Die Tests decken die

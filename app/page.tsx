@@ -3,6 +3,9 @@ import { alleKunden, kundenFehler } from "@/lib/kunden";
 import { markenVariablen } from "@/lib/marke";
 import { ALLE_USE_CASES, useCasesFuer } from "@/lib/usecases";
 
+/** Die Liste muss neu angelegte Kunden zeigen, nicht den Stand vom Bauen. */
+export const dynamic = "force-dynamic";
+
 export default function Uebersicht() {
   const kunden = alleKunden();
   const fehler = kundenFehler();

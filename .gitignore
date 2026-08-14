@@ -50,4 +50,5 @@ next-env.d.ts
 !/content/kunden/voltana.json
 
 # Kopierte Kundenlogos
+/content/logos/
 /public/logos/

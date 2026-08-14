@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { KundenSeite } from "@/components/KundenSeite";
-import { alleKundenEingaben, kunde } from "@/lib/kunden";
+import { kunde } from "@/lib/kunden";
 import { useCasesFuer } from "@/lib/usecases";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return alleKundenEingaben().map((k) => ({ slug: k.slug }));
-}
+/**
+ * Nicht vorrendern: Kunden werden im laufenden Betrieb angelegt und geändert.
+ * Eine beim Bauen erzeugte Seite würde nach dem Bearbeiten weiter die alte
+ * Fassung zeigen - nachgemessen im Produktionsbetrieb.
+ */
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;

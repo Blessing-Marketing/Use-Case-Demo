@@ -1,0 +1,17 @@
+node_modules
+.next
+.git
+.github
+content/kunden/*.json
+!content/kunden/blessing.json
+!content/kunden/nordwerk.json
+!content/kunden/helia.json
+!content/kunden/voltana.json
+content/logos
+public/logos
+tests
+*.log
+.env*
+README.md
+AGENTS.md
+CLAUDE.md

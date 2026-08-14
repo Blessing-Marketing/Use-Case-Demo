@@ -1,17 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { UseCaseSeite } from "@/components/UseCaseSeite";
-import { alleKundenEingaben, kunde } from "@/lib/kunden";
-import { aufloesen } from "@/lib/marke";
+import { kunde } from "@/lib/kunden";
 import { useCase, useCasesFuer } from "@/lib/usecases";
 
 type Props = { params: Promise<{ slug: string; usecase: string }> };
 
-export function generateStaticParams() {
-  return alleKundenEingaben().flatMap((k) =>
-    useCasesFuer(aufloesen(k).useCases).map((uc) => ({ slug: k.slug, usecase: uc.slug })),
-  );
-}
+/** Siehe ../page.tsx: Kundendaten ändern sich im laufenden Betrieb. */
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, usecase } = await params;

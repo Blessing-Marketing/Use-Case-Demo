@@ -103,11 +103,14 @@ export function Studio({
   kunden: kundenAnfang,
   dateifehler: dateifehlerAnfang,
   speichernMoeglich,
+  speicherFluechtig = false,
 }: {
   useCases: UcKurz[];
   kunden: KundeKurz[];
   dateifehler: { datei: string; grund: string }[];
   speichernMoeglich: boolean;
+  /** Server ohne dauerhaftes Verzeichnis: Angelegtes überlebt kein Deploy. */
+  speicherFluechtig?: boolean;
 }) {
   const [kunden, setKunden] = useState<KundeKurz[]>(kundenAnfang);
   const [dateifehler, setDateifehler] = useState(dateifehlerAnfang);
@@ -431,6 +434,13 @@ export function Studio({
         {speicherStand.art === "fehler" ? (
           <p className="border-t border-line bg-accent-soft px-6 py-2.5 text-[0.8rem]">
             {speicherStand.text}
+          </p>
+        ) : null}
+
+        {speicherFluechtig ? (
+          <p className="border-t border-line bg-accent-soft px-6 py-2.5 text-[0.8rem]">
+            Kein dauerhafter Speicher eingerichtet: Angelegte Kunden verschwinden beim nächsten
+            Deploy. <span className="t-mono">DEMO_DATEN_PFAD</span> auf ein Volume setzen.
           </p>
         ) : null}
       </header>
