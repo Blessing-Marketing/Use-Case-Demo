@@ -226,11 +226,20 @@ ist sofort aktuell – ohne Neubau.
 Im Repo liegt ein `Dockerfile` (Next im Standalone-Modus). In Coolify als Docker-Anwendung
 anlegen, dann:
 
-**Volume einhängen** – ohne das sind alle angelegten Kunden beim nächsten Deploy weg:
+**Volume einhängen** – ohne das sind alle angelegten Kunden beim nächsten Deploy weg. In Coolify
+unter *Storages* → *Add* ein Volume anlegen:
 
 ```text
-/daten   →   dauerhaftes Volume
+Destination Path:   /daten
 ```
+
+Das Verzeichnis `/daten` legt das Abbild selbst an. Speichern funktioniert deshalb auch **ohne**
+Volume – nur überlebt es keinen Deploy, weil der Container neu gebaut wird. Das Studio erkennt das
+und warnt sichtbar: es prüft nicht nur, ob `DEMO_DATEN_PFAD` gesetzt ist, sondern ob unter dem
+Pfad tatsächlich ein Volume hängt.
+
+Das Volume startet leer. Die vier Beispielkunden liegen im Abbild und tauchen dort nicht auf –
+das ist so gewollt.
 
 **Umgebungsvariablen:**
 

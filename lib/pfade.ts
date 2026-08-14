@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import path from "node:path";
 
 /**
@@ -19,7 +20,41 @@ export const LOGO_ORDNER = BASIS
   ? path.join(BASIS, "logos")
   : path.join(process.cwd(), "content", "logos");
 
-/** Für die Warnung im Studio: läuft das hier ohne dauerhaften Speicher? */
-export function datenPfadFehlt(): boolean {
-  return process.env.NODE_ENV === "production" && !BASIS;
+/**
+ * Ist der Pfad ein eigener Einhängepunkt?
+ *
+ * Steht er nicht in der Liste der Einhängepunkte, liegt er im Dateisystem des
+ * Containers - dann überlebt er kein Deploy. Genau der Fall, der sonst erst
+ * auffällt, wenn die Kundendaten schon weg sind.
+ *
+ * Das Format je Zeile: `36 35 98:0 /quelle /ziel rw,... - ext4 ...`,
+ * das Ziel steht an fünfter Stelle.
+ */
+export function istEigenerEinhaengepunkt(einhaengeliste: string, pfad: string): boolean {
+  return einhaengeliste.split("\n").some((zeile) => {
+    const ziel = zeile.split(" ")[4];
+    return ziel === pfad || (Boolean(ziel) && pfad.startsWith(`${ziel}/`));
+  });
+}
+
+/**
+ * Läuft das hier ohne dauerhaften Speicher? Dann warnt das Studio sichtbar.
+ * Deckt beide Fälle ab: gar kein Pfad eingerichtet, oder ein Pfad ohne Volume.
+ */
+export function datenPfadFluechtig(): boolean {
+  if (process.env.NODE_ENV !== "production") return false;
+  if (!BASIS) return true;
+
+  try {
+    // Gibt es nur unter Linux; lokal ist die Frage ohnehin gegenstandslos.
+    const liste = fs.readFileSync("/proc/self/mountinfo", "utf8");
+    return !istEigenerEinhaengepunkt(liste, BASIS);
+  } catch {
+    return false;
+  }
+}
+
+/** Für die Anzeige im Studio. */
+export function datenPfadAnzeige(): string {
+  return BASIS ?? path.join("content");
 }

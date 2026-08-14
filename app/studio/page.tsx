@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Studio, type UcKurz } from "@/components/studio/Studio";
 import { kundenLesen } from "@/lib/kunden";
-import { datenPfadFehlt } from "@/lib/pfade";
+import { datenPfadAnzeige, datenPfadFluechtig } from "@/lib/pfade";
 import { schreibenErlaubt } from "@/lib/umgebung";
 import { ALLE_USE_CASES } from "@/lib/usecases";
 
@@ -38,7 +38,8 @@ export default function StudioSeite() {
       }))}
       dateifehler={fehler}
       speichernMoeglich={schreibenErlaubt()}
-      speicherFluechtig={datenPfadFehlt()}
+      speicherFluechtig={datenPfadFluechtig()}
+      datenPfad={datenPfadAnzeige()}
     />
   );
 }

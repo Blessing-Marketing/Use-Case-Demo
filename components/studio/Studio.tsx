@@ -106,6 +106,7 @@ export function Studio({
   dateifehler: dateifehlerAnfang,
   speichernMoeglich,
   speicherFluechtig = false,
+  datenPfad = "",
 }: {
   useCases: UcKurz[];
   kunden: KundeKurz[];
@@ -113,6 +114,7 @@ export function Studio({
   speichernMoeglich: boolean;
   /** Server ohne dauerhaftes Verzeichnis: Angelegtes überlebt kein Deploy. */
   speicherFluechtig?: boolean;
+  datenPfad?: string;
 }) {
   const [kunden, setKunden] = useState<KundeKurz[]>(kundenAnfang);
   const [dateifehler, setDateifehler] = useState(dateifehlerAnfang);
@@ -454,9 +456,10 @@ export function Studio({
         ) : null}
 
         {speicherFluechtig ? (
-          <p className="border-t border-line bg-accent-soft px-6 py-2.5 text-[0.8rem]">
-            Kein dauerhafter Speicher eingerichtet: Angelegte Kunden verschwinden beim nächsten
-            Deploy. <span className="t-mono">DEMO_DATEN_PFAD</span> auf ein Volume setzen.
+          <p className="border-t border-line bg-accent-soft px-6 py-2.5 text-[0.8rem] leading-relaxed">
+            <strong>Kein dauerhafter Speicher.</strong> Angelegte Kunden liegen unter{" "}
+            <span className="t-mono">{datenPfad}</span> im Container und sind beim nächsten Deploy
+            weg. Dort muss ein Volume eingehängt sein.
           </p>
         ) : null}
       </header>
