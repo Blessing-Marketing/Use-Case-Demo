@@ -153,14 +153,36 @@ app/                     Routen
   kunde/[slug]/          Kundendemo
   vorschau/              Teilbarer Entwurf aus der Adresse
   studio/                Einrichtung
+  logos/[datei]/         Kopierte Kundenlogos ausliefern
   api/marke-erfassen/    Website auslesen
   api/bild/              Logos durchreichen
+  api/kunden/            Kunden lesen, anlegen, löschen
+  api/gesundheit/        Lebenszeichen für den Healthcheck
+  not-found.tsx          Fehlerseite für unbekannte Adressen
+  icon.png               Favicon, siehe unten
 components/              Lauf, Belege, Karten, Studio
 content/kunden/*.json    Kunden
 lib/usecases/*.ts        Abläufe
 lib/marke.ts             Marke auflösen und kodieren
 lib/erfassen.ts          Website auswerten
+lib/kennzahlen.ts        Hochrechnungen
+lib/zugang.ts            Anmeldung prüfen
+proxy.ts                 Zugangsschutz
 ```
+
+### Symbol im Browser-Tab
+
+Das Signet von Blessing Solutions, auf allen Seiten gleich – auch auf den Kundendemos. Dort trägt
+zwar der Inhalt die Farben des Kunden, das Tab-Symbol bleibt aber unseres: die Demo kommt sichtbar
+von uns, und ein fremdes Logo im Tab wäre eine Anmaßung.
+
+| Datei | Zweck |
+| --- | --- |
+| `app/icon.png` | 256 px, transparent – der Normalfall |
+| `app/favicon.ico` | dieselbe Grafik im ICO-Container, für Browser, die stur `/favicon.ico` abfragen |
+| `app/apple-icon.jpg` | 180 px mit weißem Grund fürs iOS-Startbild; transparente Symbole werden dort sonst schwarz hinterlegt |
+
+Zum Austauschen genügt es, die Dateien zu ersetzen – Next bindet sie von allein ein.
 
 ## Barrierefreiheit und Kontrast
 
