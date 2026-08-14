@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { befundAlsMarke, ErfassungsFehler, markeErfassen } from "@/lib/erfassen";
+import { mitZusatz } from "@/lib/kuerzel";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -22,7 +23,8 @@ export async function POST(request: Request) {
 
   try {
     const befund = await markeErfassen(url);
-    const vorschlag = befundAlsMarke(befund, befund.kuerzel);
+    // Zufallszusatz, damit die Adresse nicht aus dem Firmennamen zu erraten ist.
+    const vorschlag = befundAlsMarke(befund, mitZusatz(befund.kuerzel));
     return NextResponse.json({ befund, vorschlag });
   } catch (fehler) {
     const nachricht =

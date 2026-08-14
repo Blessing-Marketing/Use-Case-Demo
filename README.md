@@ -234,10 +234,13 @@ Gesperrt sind damit die Übersicht aller Kunden, das Studio und die Erfassungs-R
 einer Kundendemo führt ohnehin kein Link zu einem anderen Kunden – dort gibt es nur Abläufe
 derselben Marke, `mailto:` und einen Seitenanker.
 
-**Kundenkürzel sind ratbar.** Sie stammen aus der Domain: `festool.de` wird zu
-`/kunde/festool`. Wer wissen will, ob eine bestimmte Firma eine Demo bekommen hat, tippt den Namen
-ein. Solange das stört, ist der Vorschau-Link die Alternative – dessen kodierter Block ist nicht
-zu erraten.
+**Kundenadressen sind nicht zu erraten.** An das Kürzel kommt beim Erfassen ein Zufallszusatz:
+aus `festool.de` wird `/kunde/festool-jbr9de`. Lesbar und verschickbar, aber der Firmenname allein
+öffnet nichts – wichtig, weil Kundendemos ohne Passwort erreichbar sein müssen. Die sechs Zeichen
+meiden `0`, `O`, `1`, `l` und `I`, damit die Adresse auch am Telefon vorlesbar bleibt.
+
+Im Studio lässt sich der Zusatz per Knopf entfernen oder neu würfeln; beim Bearbeiten eines
+bestehenden Kunden bleibt das Kürzel unverändert.
 
 ### Noch offen
 

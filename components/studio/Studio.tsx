@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Befund } from "@/lib/erfassen";
+import { hatZusatz, mitZusatz, ohneZusatz } from "@/lib/kuerzel";
 import {
   BODY_FONTS,
   DISPLAY_FONTS,
@@ -700,6 +701,26 @@ export function Studio({
                 />
               </Feld>
             </div>
+
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <button
+                type="button"
+                onClick={() =>
+                  aendern({
+                    slug: hatZusatz(marke.slug) ? ohneZusatz(marke.slug) : mitZusatz(marke.slug),
+                  })
+                }
+                className="t-mono rounded-brand-sm border border-line px-2.5 py-1 text-[0.68rem] text-muted transition-colors hover:border-primary hover:text-primary"
+              >
+                {hatZusatz(marke.slug) ? "Zufallszusatz entfernen" : "Zufallszusatz anhängen"}
+              </button>
+              <span className="text-[0.74rem] leading-snug text-muted">
+                {hatZusatz(marke.slug)
+                  ? "Die Adresse ist nicht zu erraten."
+                  : "Ohne Zusatz kann jeder den Firmennamen durchprobieren."}
+              </span>
+            </div>
+
             {slugKollision ? (
               <p className="t-mono text-[0.7rem] text-accent-text">
                 Kürzel ist vergeben – die vorhandene Demo würde überschrieben.
