@@ -17,6 +17,9 @@ const OEFFENTLICH = [
   /^\/logos\//, // Kundenlogos auf diesen Seiten
   /^\/api\/bild(\/|$)/, // Logos in Vorschau-Links
   /^\/api\/gesundheit$/, // Healthcheck des Containers
+  // Das Symbol im Browser-Tab. Ohne diese Zeile fehlt es genau dort, wo es
+  // zählt: auf den Seiten, die ein Kunde ohne Anmeldung sieht.
+  /^\/(icon|apple-icon|favicon)\.[a-z0-9]+$/,
 ];
 
 function abfrage(nachricht: string, status = 401) {
